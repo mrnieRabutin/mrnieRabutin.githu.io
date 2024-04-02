@@ -1,0 +1,268 @@
+<ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="EmployeesTab" href="#"
+                            onclick="openTable('employees', 'EmployeesTab');">Employees</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " id="AvailableJobsTab" href="#"
+                            onclick="openTable('available_jobs', 'AvailableJobsTab');">Available Jobs</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="ApplicantsTab" href="#"
+                            onclick="openTable('applicants', 'ApplicantsTab');">Applicants</a>
+                    </li>
+                </ul>
+
+
+
+                function openTable(tabId, tabLinkId) {
+                    var tableType = tabId;
+        
+                    var tabs = document.querySelectorAll('.nav-link');
+                    tabs.forEach(function (tab) {
+                        tab.classList.remove('active');
+                    });
+        
+                    // Add "active" class to the clicked tab
+                    var activeTab = document.getElementById(tabLinkId);
+                    activeTab.classList.add('active');
+        
+                    $.ajax({
+                        type: 'POST',
+                        url: 'staff_tables.php', // Create a separate PHP file for processing job upload
+                        data: { tableType: tableType },
+        
+        
+                        success: function (response) {
+                            // Handle success, update the UI or close the modal if needed
+                            $('.tables').html(response);
+                        },
+                        error: function (error) {
+                            // Handle error, show an alert or update the UI
+                            console.error('Ajax Error:', error);
+                        }
+                    });
+        
+                }
+        gwapa
+        Kristel Sala
+        <?php
+        session_start();
+        $user_id = $_SESSION["id"];
+        include "../config.php";
+        
+        
+        
+        if ($_POST["tableType"] == 'employees') {
+            ?>
+            <table class="table table-bordered">
+                <!-- Table headers... -->
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">Image</th>
+                        <th scope="col" class="text-center">Name</th>
+                        <th scope="col" class="text-center">Position</th>
+                        <th scope="col" class="text-center">Salary</th>
+                        <th scope="col" class="text-center">Date Hired</th>
+                        <th scope="col" class="text-center" colspan="2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // ... Existing PHP code ...
+                
+                    // Modify the SQL query based on the search parameter
+                    if (isset($_GET['search']) && !empty($_GET['search'])) {
+                        $search = mysqli_real_escape_string($conn, $_GET['search']);
+                        $staffqry = " WHERE fname LIKE '%$search%'";
+                    }
+        
+                    // ... Existing PHP code ...
+                    ?>
+        
+                    <?php
+                    $staffqry = "SELECT * FROM employees WHERE company_id = $user_id";
+        
+                    $result = $conn->query($staffqry);
+        
+                    if ($result !== false && $result->num_rows > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            ?>
+                            <tr>
+                                <td><img src="../img/profiles/<?php echo $row['img'] ?>" alt="<?php echo $row['img'] ?>"
+                                        class="img-thumbnail" style="width: 50px;">
+                                </td>
+                                <td>
+                                    <?php echo $row['fname'] . ' ' . $row['mname'] . ' ' . $row['lname']; ?>
+                                </td>
+        
+                                <td>
+                                    <?php echo $row['position'] ?>
+                                </td>
+                                <td>PHP
+                                    <?php echo $row['salary'] ?>
+                                </td>
+                                <td>
+                                    <?php echo $row['date_created'] ?>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#updateEmployeeModal" onclick="updateEmployee(<?php echo $row['id']; ?>, 
+                                             '<?php echo $row['fname']; ?>', 
+                                             '<?php echo $row['mname']; ?>',
+                                             '<?php echo $row['lname']; ?>',
+                                             '<?php echo $row['position']; ?>',
+                                             '<?php echo $row['salary']; ?>')">
+                                        Update
+                                    </button>
+                                </td>
+        
+                                <td>
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#deleteEmployeeModal"
+                                        onclick="deleteEmployee(<?php echo $row['id']; ?>, '<?php echo $row['fname'] . ' ' . $row['lname']; ?>')">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                    } else {
+                        echo "$user_id";
+                        ?>
+                        <tr>
+        
+                            <td colspan="6" class="bg-danger text-white text-center">No data found!</td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                </tbody>
+            </table>
+            <?php
+        }
+        if ($_POST["tableType"] == 'available_jobs') {
+            ?>
+            <table class="table table-bordered">
+                <!-- Table headers... -->
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">Position</th>
+                        <th scope="col" class="text-center">Description</th>
+                        <th scope="col" class="text-center">Salary</th>
+                        <th scope="col" class="text-center">Status</th>
+                        <th scope="col" class="text-center">Date Hired</th>
+                        <th scope="col" class="text-center" colspan="2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // ... Existing PHP code ...
+                
+                    // Modify the SQL query based on the search parameter
+                    if (isset($_GET['search']) && !empty($_GET['search'])) {
+                        $search = mysqli_real_escape_string($conn, $_GET['search']);
+                        $staffqry = " WHERE fname LIKE '%$search%'";
+                    }
+        
+                    // ... Existing PHP code ...
+                    ?>
+        
+                    <?php
+                    $staffqry = "SELECT * FROM available_jobs WHERE company_id = $user_id";
+        
+                    $result = $conn->query($staffqry);
+        
+                    if ($result !== false && $result->num_rows > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            ?>
+                            <tr>
+        
+        
+        
+                                <td>
+                                    <?php
+
+
+
+                                    <div class="tables">
+                                        <table class="table">
+                                            <!-- Table headers... -->
+                                            <thead>
+                                                <tr>
+                                                    
+                                                    <th scope="col" class="text-center">Name</th>
+                                                    <th scope="col" class="text-center">Position</th>
+                                                    <th scope="col" class="text-center">Salary</th>
+                                                    <th scope="col" class="text-center">Date Hired</th>
+                                                    <th scope="col" class="text-center" colspan="2">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                // ... Existing PHP code ...
+                                                
+                                                // Modify the SQL query based on the search parameter
+                                                if (isset($_GET['search']) && !empty($_GET['search'])) {
+                                                    $search = mysqli_real_escape_string($conn, $_GET['search']);
+                                                    $staffqry = " WHERE fname LIKE '%$search%'";
+                                                }
+                        
+                                                // ... Existing PHP code ...
+                                                ?>
+                        
+                                                <?php
+                                                $staffqry = "SELECT * FROM employees WHERE company_id = $user_id";
+                        
+                                                $result = $conn->query($staffqry);
+                        
+                                                if ($result !== false && $result->num_rows > 0) {
+                                                    while ($row = mysqli_fetch_assoc($result)) {
+                                                        ?>
+                                                        <tr>
+                                                           
+                                                            <td>
+                                                                <?php echo $row['fullname']; ?>
+                                                            </td>
+                        
+                                                            <td>
+                                                                <?php echo $row['position'] ?>
+                                                            </td>
+                                                            <td>PHP
+                                                                <?php echo $row['salary'] ?>
+                                                            </td>
+                                                            <td>
+                                                                <?php echo $row['date_created'] ?>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-primary" data-toggle="modal" data-target="#updateEmployeeModal"
+                                                                    onclick="updateEmployee(<?php echo $row['id']; ?>, 
+                                                           
+                                                             '<?php echo $row['fullname']; ?>',
+                                                             '<?php echo $row['position']; ?>',
+                                                             '<?php echo $row['salary']; ?>')">
+                                                                    Update
+                                                                </button>
+                                                            </td>
+                        
+                                                            <td>
+                                                                <button class="btn btn-danger" data-toggle="modal" data-target="#deleteEmployeeModal"
+                                                                    onclick="deleteEmployee(<?php echo $row['id']; ?>, '<?php echo $row['fullname'] ?>')">
+                                                                    Delete
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <?php
+                                                    }
+                                                } else {
+                                                    ?>
+                                                    <tr>
+                                                        <td colspan="6" class="bg-danger text-white text-center">No data found!</td>
+                                                    </tr>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                        Write to Kristel Sala
+                        
