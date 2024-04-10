@@ -1,8 +1,10 @@
 <?php
 session_start();
 
+// Include the database connection file
 include 'connect.php';
 
+// Function to fetch user details from the database
 function getUserDetails($userId)
 {
     global $conn;
@@ -16,44 +18,41 @@ try {
     $conn = new PDO("mysql:host=sql6.freesqldatabase.com;dbname=sql6691333", "sql6691333", "JcDgZUMWNU");
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    die ("Connection failed: " . $e->getMessage());
+    die("Connection failed: " . $e->getMessage());
 }
 
 // Check if user is logged in
-if (!isset ($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
 }
 
 // Get user details
-$userDetails = getUserDetails($_SESSION["id"]);
+$userDetails = getUserDetails($_SESSION["venue_id"]);
 
 // Fetch booking details
-if (isset ($_GET['booking_id'])) {
+$booking = $venue = $reviews = [];
+if (isset($_GET['booking_id'])) {
     $booking_id = $_GET['booking_id'];
-
     $select_booking = $conn->prepare("SELECT * FROM bookings WHERE id = ?");
     $select_booking->execute([$booking_id]);
     $booking = $select_booking->fetch(PDO::FETCH_ASSOC);
 
-    // Fetch reviews for the booking
-    $select_reviews = $conn->prepare("SELECT * FROM reviews WHERE booking_id = ?");
-    $select_reviews->execute([$booking_id]);
-    $reviews = $select_reviews->fetchAll(PDO::FETCH_ASSOC);
+    if ($booking) {
+        // Fetch venue details
+        $venue_id = $booking['venue_id']; // Corrected variable name
+        $sql_venue = $conn->prepare("SELECT * FROM venues WHERE id = ?");
+        $sql_venue->execute([$venue_id]);
+        $venue = $sql_venue->fetch(PDO::FETCH_ASSOC);
 
-    // Process reviews deletion
-    if (isset ($_POST['delete_review'])) {
-        $review_id = $_POST['delete_review'];
-        $delete_review = $conn->prepare("DELETE FROM reviews WHERE id = ?");
-        $delete_review->execute([$review_id]);
-        header("Location: {$_SERVER['PHP_SELF']}?booking_id=$booking_id");
-        exit();
+        // Fetch reviews for the booking
+        $select_reviews = $conn->prepare("SELECT * FROM reviews WHERE booking_id = ?");
+        $select_reviews->execute([$booking_id]);
+        $reviews = $select_reviews->fetchAll(PDO::FETCH_ASSOC);
     }
-} else {
-    header("Location:add_review.php");
-    exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -61,10 +60,8 @@ if (isset ($_GET['booking_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Booking Details</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <?= $booking['venue']; ?> Booking
-    </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* CSS styles */
@@ -267,7 +264,7 @@ if (isset ($_GET['booking_id'])) {
 
         .container {
             max-width: 800px;
-            margin-left:40vh;
+            margin-left: 40vh;
         }
 
         .venue-details {
@@ -322,45 +319,25 @@ if (isset ($_GET['booking_id'])) {
     </div>
 
     <!-- Booking details section -->
-    <section class="booking-details">
+    <section class="venue-details">
         <div class="container">
-            <?php if (isset ($booking['venue_id'])): ?>
-                <?php
-                $select_venue = $conn->prepare("SELECT * FROM venues WHERE id = ?");
-                $select_venue->execute([$booking['venue_id']]);
-                $venue = $select_venue->fetch(PDO::FETCH_ASSOC);
-                ?>
-                <?php if ($venue): ?>
-                    <div class="venue-details">
-                        <h3>Venue Details</h3>
-                        <div class="venue-info">
-                            <p><strong>Name:</strong>
-                                <?= $venue['name']; ?>
-                            </p>
-                            <?php if (!empty ($venue['image'])): ?>
-                                <div class="venue-image">
-                                    <img src="images/Italian_R.jpg" alt="Venue Image" width="600px">
-                                </div>
-                            <?php endif; ?>
-
-                            <p><strong>Description:</strong>
-                                <?= $venue['description']; ?>
-                            </p>
-                            <p><strong>Location:</strong>
-                                <?= $venue['location']; ?>
-                            </p>
-                            <p><strong>Contact:</strong>
-                                <?= $venue['contact']; ?>
-                            </p>
-                            <p><strong>Capacity:</strong>
-                                <?= $venue['capacity']; ?>
-                            </p>
-                            <p><strong>Facilities:</strong>
-                                <?= $venue['facilities']; ?>
-                            </p>
+            <?php if (isset($booking['id']) && isset($venue['id'])): ?>
+                <h3>Venue Details</h3>
+                <div class="venue-info">
+                    <p><strong>Name:</strong> <?= $venue['venue_name']; ?></p>
+                    <?php if (!empty($venue['venue_image'])): ?>
+                        <div class="venue-image">
+                            <img src="images/jpg;base64,<?= base64_encode($venue['venue_image']); ?>" alt="Venue Image">
                         </div>
-                    </div>
-                <?php endif; ?>
+                    <?php endif; ?>
+                    <p><strong>Description:</strong> <?= $venue['description']; ?></p>
+                    <p><strong>Location:</strong> <?= $venue['location']; ?></p>
+                    <p><strong>Contact:</strong> <?= $venue['contact']; ?></p>
+                    <p><strong>Capacity:</strong> <?= $venue['capacity']; ?></p>
+                    <p><strong>Facilities:</strong> <?= $venue['facilities']; ?></p>
+                </div>
+            <?php else: ?>
+                <p>No booking or venue found.</p>
             <?php endif; ?>
         </div>
     </section>
@@ -372,15 +349,14 @@ if (isset ($_GET['booking_id'])) {
             <div class="add-review">
                 <a href="add_review.php?booking_id=<?= $booking_id ?>" class="inline-btn">Add Review</a>
                 <h2>User's Reviews</h2>
-                <?php if (!empty ($reviews)): ?>
+                <?php if (!empty($reviews)): ?>
                     <ul>
                         <?php foreach ($reviews as $review): ?>
-                            <li>
                                 <!-- Display logged-in user's email -->
                                 <p>
                                     <?= $_SESSION['email']; ?>
                                 </p>
-                                <?php if (!empty ($userDetails) && !empty ($userDetails['pic'])): ?>
+                                <?php if (!empty($userDetails) && !empty($userDetails['pic'])): ?>
                                     <img src="<?= $userDetails['pic']; ?>" alt="Profile Picture" width="50">
                                 <?php endif; ?>
                                 <form method="post">
@@ -402,7 +378,6 @@ if (isset ($_GET['booking_id'])) {
                                 <p>Date:
                                     <?= $review['date']; ?>
                                 </p>
-                            </li>
                         <?php endforeach; ?>
                     </ul>
                 <?php else: ?>

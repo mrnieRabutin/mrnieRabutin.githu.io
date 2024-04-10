@@ -1,45 +1,51 @@
-   <div class="box-container">
-      <?php
-         // Display bookings
-         $select_bookings = $conn->prepare("SELECT b.*, IFNULL(AVG(r.rating), 0) AS rating 
+<div class="box-container">
+    <?php
+    // Display bookings
+    $select_bookings = $conn->prepare("SELECT b.*, IFNULL(AVG(r.rating), 0) AS rating 
          FROM `bookings` b 
          LEFT JOIN `reviews` r ON b.id = r.booking_id 
          GROUP BY b.id 
          ORDER BY b.id DESC");
-         $select_bookings->execute(); // Execute the query
-         if($select_bookings->rowCount() > 0){
-            while($fetch_booking = $select_bookings->fetch(PDO::FETCH_ASSOC)){
-               $booking_id = $fetch_booking['id'];
-               $event_type = $fetch_booking['event_type'];
-               $booking_details = $fetch_booking['booking_details'];
+    $select_bookings->execute(); // Execute the query
+    if ($select_bookings->rowCount() > 0) {
+        while ($fetch_booking = $select_bookings->fetch(PDO::FETCH_ASSOC)) {
+            $booking_id = $fetch_booking['id'];
+            $event_type = $fetch_booking['event_type'];
+            $booking_details = $fetch_booking['booking_details'];
 
-      ?>
-      <div class="box">
-    <h3 class="title">Booking ID: <?= $booking_id; ?></h3>
-    <p class="total-items">Event Type: <?= $event_type; ?></p>
-    <p class="total-items">Booking Details: <?= $booking_details; ?></p>
-    <?php
-    // Assuming the rating is out of 5
-    $rating = $fetch_booking['rating'];
-    echo '<div class="rating">';
-    for ($i = 1; $i <= 5; $i++) {
-        if ($i <= $rating) {
-            echo '<i class="fas fa-star"></i>'; // Full star
-        } else {
-            echo '<i class="far fa-star"></i>'; // Empty star
+            ?>
+            <div class="box">
+                <h3 class="title">Booking ID:
+                    <?= $booking_id; ?>
+                </h3>
+                <p class="total-items">Event Type:
+                    <?= $event_type; ?>
+                </p>
+                <p class="total-items">Booking Details:
+                    <?= $booking_details; ?>
+                </p>
+                <?php
+                // Assuming the rating is out of 5
+                $rating = $fetch_booking['rating'];
+                echo '<div class="rating">';
+                for ($i = 1; $i <= 5; $i++) {
+                    if ($i <= $rating) {
+                        echo '<i class="fas fa-star"></i>'; // Full star
+                    } else {
+                        echo '<i class="far fa-star"></i>'; // Empty star
+                    }
+                }
+                echo '</div>';
+                ?>
+                <a href="view_post.php?booking_id=<?= $booking_id; ?>" class="inline-btn">View Booking</a>
+            </div>
+            <?php
         }
+    } else {
+        echo '<p class="empty">No bookings added yet!</p>';
     }
-    echo '</div>';
     ?>
-    <a href="view_post.php?booking_id=<?= $booking_id; ?>" class="inline-btn">View Booking</a>
 </div>
-<?php
-            }
-         } else {
-            echo '<p class="empty">No bookings added yet!</p>';
-         }
-      ?>
-   </div>
 
 
 
@@ -60,50 +66,56 @@
 
 
 
-   <div class="box-container">
-   <?php
-   // Display user requests
-   $select_requests = $conn->prepare("SELECT u.*, IFNULL(AVG(r.rating), 0) AS rating 
+<div class="box-container">
+    <?php
+    // Display user requests
+    $select_requests = $conn->prepare("SELECT u.*, IFNULL(AVG(r.rating), 0) AS rating 
        FROM `user_requests` u 
        LEFT JOIN `reviews` r ON u.id = r.booking_id 
        WHERE u.admin_response = 'approved' 
        GROUP BY u.id 
        ORDER BY u.id DESC");
-   $select_requests->execute();
-   if($select_requests->rowCount() > 0){
-       while($fetch_request = $select_requests->fetch(PDO::FETCH_ASSOC)){
-           $request_id = $fetch_request['id'];
-           $event_type = $fetch_request['event_type'];
-           $location = $fetch_request['location'];
-   ?>
-   <div class="box">
-       <h3 class="title">Request ID: <?= $request_id; ?></h3>
-       <p class="total-items">Event Name: <?= $event_type; ?></p>
-       <p class="total-items">Location: <?= $location; ?></p>
-       
-       <!-- Add more details as needed -->
-       <?php
-       // Assuming the rating is out of 5
-       $rating = $fetch_request['rating'];
-       echo '<div class="rating">';
-       for ($i = 1; $i <= 5; $i++) {
-           if ($i <= $rating) {
-               echo '<i class="fas fa-star"></i>'; // Full star
-           } else {
-               echo '<i class="far fa-star"></i>'; // Empty star
-           }
-       }
-       echo '</div>';
-       ?>
-      <a href="view_request.php?requests_id=<?= $request_id; ?>" class="inline-btn">View Request</a>
+    $select_requests->execute();
+    if ($select_requests->rowCount() > 0) {
+        while ($fetch_request = $select_requests->fetch(PDO::FETCH_ASSOC)) {
+            $request_id = $fetch_request['id'];
+            $event_type = $fetch_request['event_type'];
+            $location = $fetch_request['location'];
+            ?>
+            <div class="box">
+                <h3 class="title">Request ID:
+                    <?= $request_id; ?>
+                </h3>
+                <p class="total-items">Event Name:
+                    <?= $event_type; ?>
+                </p>
+                <p class="total-items">Location:
+                    <?= $location; ?>
+                </p>
 
-   </div>
-   <?php
-       }
-   } else {
-       echo '<p class="empty">No approved user requests found!</p>';
-   }
-   ?>
+                <!-- Add more details as needed -->
+                <?php
+                // Assuming the rating is out of 5
+                $rating = $fetch_request['rating'];
+                echo '<div class="rating">';
+                for ($i = 1; $i <= 5; $i++) {
+                    if ($i <= $rating) {
+                        echo '<i class="fas fa-star"></i>'; // Full star
+                    } else {
+                        echo '<i class="far fa-star"></i>'; // Empty star
+                    }
+                }
+                echo '</div>';
+                ?>
+                <a href="view_request.php?requests_id=<?= $request_id; ?>" class="inline-btn">View Request</a>
+
+            </div>
+            <?php
+        }
+    } else {
+        echo '<p class="empty">No approved user requests found!</p>';
+    }
+    ?>
 </div>
 
 
@@ -124,49 +136,49 @@
 
 
 <div class="box-container">
-   <?php
-   // Display user requests
-   $select_requests = $conn->prepare("SELECT u.*, IFNULL(AVG(r.rating), 0) AS rating 
+    <?php
+    // Display user requests
+    $select_requests = $conn->prepare("SELECT u.*, IFNULL(AVG(r.rating), 0) AS rating 
        FROM `product` u 
        LEFT JOIN `reviews` r ON u.id = r.booking_id 
        WHERE u.admin_response = 'approved' 
        GROUP BY u.id 
        ORDER BY u.id DESC");
-   $select_requests->execute();
-   if($select_requests->rowCount() > 0){
-       while($fetch_request = $select_requests->fetch(PDO::FETCH_ASSOC)){
-           $request_id = $fetch_request['id'];
-           $event_type = $fetch_request['event_type'];
-           $location = $fetch_request['location'];
-   ?>
-   <div class="box">
-       <h3 class="title">Request ID: <?= $request_id; ?></h3>
-       <p class="total-items">Event Name: <?= $event_type; ?></p>
-       <!-- Add more details as needed -->
-       <?php
-       // Assuming the rating is out of 5
-       $rating = $fetch_request['rating'];
-       echo '<div class="rating">';
-       for ($i = 1; $i <= 5; $i++) {
-           if ($i <= $rating) {
-               echo '<i class="fas fa-star"></i>'; // Full star
-           } else {
-               echo '<i class="far fa-star"></i>'; // Empty star
-           }
-       }
-       echo '</div>';
-       ?>
-      <a href="view_request.php?requests_id=<?= $request_id; ?>" class="inline-btn">View Product</a>
+    $select_requests->execute();
+    if ($select_requests->rowCount() > 0) {
+        while ($fetch_request = $select_requests->fetch(PDO::FETCH_ASSOC)) {
+            $request_id = $fetch_request['id'];
+            $event_type = $fetch_request['event_type'];
+            $location = $fetch_request['location'];
+            ?>
+            <div class="box">
+                <h3 class="title">Request ID:
+                    <?= $request_id; ?>
+                </h3>
+                <p class="total-items">Event Name:
+                    <?= $event_type; ?>
+                </p>
+                <!-- Add more details as needed -->
+                <?php
+                // Assuming the rating is out of 5
+                $rating = $fetch_request['rating'];
+                echo '<div class="rating">';
+                for ($i = 1; $i <= 5; $i++) {
+                    if ($i <= $rating) {
+                        echo '<i class="fas fa-star"></i>'; // Full star
+                    } else {
+                        echo '<i class="far fa-star"></i>'; // Empty star
+                    }
+                }
+                echo '</div>';
+                ?>
+                <a href="view_request.php?requests_id=<?= $request_id; ?>" class="inline-btn">View Product</a>
 
-   </div>
-   <?php
-       }
-   } else {
-       echo '<p class="empty">No approved user requests found!</p>';
-   }
-   ?>
+            </div>
+            <?php
+        }
+    } else {
+        echo '<p class="empty">No approved user requests found!</p>';
+    }
+    ?>
 </div>
-
-
-
-

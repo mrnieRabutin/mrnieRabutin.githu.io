@@ -10,17 +10,17 @@ function getProductDetails($productId)
 
 }
 
-if (isset ($_GET['product_id'])) {
+if (isset($_GET['product_id'])) {
     $product_id = $_GET['product_id'];
 
-    $select_product = $conn_abarzosa->prepare("SELECT id, product_name, product_type, description, price FROM `product` WHERE id = ?");
+    $select_product = $conn->prepare("SELECT id, product_name, product_type, description, price FROM `product` WHERE id = ?");
     $select_product->execute([$product_id]);
     $product_result = $select_product->get_result();
     $product = $product_result->fetch_assoc();
 
 
     // Fetch reviews for the product
-    $select_reviews = $conn_abarzosa->prepare("SELECT * FROM `reviews` WHERE product_id = ?");
+    $select_reviews = $conn->prepare("SELECT * FROM `reviews` WHERE product_id = ?");
     $select_reviews->bind_param("i", $product_id); // Assuming product_id is an integer
     $select_reviews->execute();
     $reviews_result = $select_reviews->get_result();
@@ -40,9 +40,9 @@ if (isset ($_GET['product_id'])) {
     }
     $average_rating = ($total_reviews > 0) ? round($total_rating / $total_reviews, 1) : 0;
 
-    if (isset ($_POST['delete_review'])) {
+    if (isset($_POST['delete_review'])) {
         $review_id = $_POST['delete_review'];
-        $delete_review = $conn_abarzosa->prepare("DELETE FROM `reviews` WHERE id = ?");
+        $delete_review = $conn->prepare("DELETE FROM `reviews` WHERE id = ?");
         $delete_review->execute([$review_id]);
         header("Location: {$_SERVER['PHP_SELF']}?product_id=$product_id");
         exit();
@@ -313,7 +313,7 @@ if (isset ($_GET['product_id'])) {
 
     <!-- Header section -->
     <div class="header">
-        <h1>Product Details</h1>
+        <h1>Restaurant Review System</h1>
 
         <div>
             <!-- Add your profile and logout links here -->
@@ -330,24 +330,6 @@ if (isset ($_GET['product_id'])) {
         </ul>
     </div>
 
-    <!-- Product details section -->
-    <section class="product-details">
-    <div class="container">
-        <h3 class="section-title">Product Details</h3>
-        <div class="product-info">
-            <div class="product-image">
-                <img src="images/burgers.jpg" alt="<?= $product['product_name']; ?>">
-            </div>
-            <div class="product-description">
-                <h4><?= $product['product_name']; ?></h4>
-                <p class="product-type"><?= $product['product_type']; ?></p>
-                <p class="price">$<?= $product['price']; ?></p>
-                <p class="description"><?= $product['description']; ?></p>
-            </div>
-        </div>
-    </div>
-</section>
-
     <!-- Reviews section -->
     <section class="user_requests">
         <div class="container">
@@ -359,13 +341,13 @@ if (isset ($_GET['product_id'])) {
                         class="fas fa-plus"></i> Add Review</a>
             </div>
             <h2>User's Reviews</h2>
-            <?php if (!empty ($reviews)): ?>
+            <?php if (!empty($reviews)): ?>
                 <ul>
                     <?php foreach ($reviews as $review): ?>
                         <h2>
                             <?= $review['username']; ?>
                         </h2>
-                        <li>
+                    
 
                             <img src="images/<?php echo $userDetails['image']; ?>" alt="" width="50">
 
@@ -388,7 +370,7 @@ if (isset ($_GET['product_id'])) {
                             <p>Date:
                                 <?= $review['date']; ?>
                             </p>
-                        </li>
+                    
                     <?php endforeach; ?>
                 </ul>
             <?php else: ?>

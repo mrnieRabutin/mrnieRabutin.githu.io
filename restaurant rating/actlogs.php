@@ -14,7 +14,7 @@ function deleteAllLogs($conn)
 }
 
 // Check if the delete button is clicked
-if (isset ($_POST['delete_logs'])) {
+if (isset($_POST['delete_logs'])) {
     deleteAllLogs($conn);
 }
 

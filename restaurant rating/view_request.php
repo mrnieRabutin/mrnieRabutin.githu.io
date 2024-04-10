@@ -1,7 +1,7 @@
 <?php
 include 'connect.php';
 
-if (isset ($_GET['requests_id'])) {
+if (isset($_GET['requests_id'])) {
     $requests_id = $_GET['requests_id'];
 
     $select_requests = $conn->prepare("SELECT id, event_type, venue, budget, ambiance, special_requests FROM `user_requests` WHERE id = ?");
@@ -28,7 +28,7 @@ if (isset ($_GET['requests_id'])) {
     }
     $average_rating = ($total_reviews > 0) ? round($total_rating / $total_reviews, 1) : 0;
 
-    if (isset ($_POST['delete_review'])) {
+    if (isset($_POST['delete_review'])) {
         $review_id = $_POST['delete_review'];
         $delete_review = $conn->prepare("DELETE FROM `reviews` WHERE id = ?");
         $delete_review->bind_param("i", $review_id); // Bind parameter
@@ -267,55 +267,6 @@ if (isset ($_GET['requests_id'])) {
         </ul>
     </div>
 
-    <!-- Booking details section -->
-    <section class="requests">
-        <div class="container">
-            <h3>Users Requests Details</h3>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Attribute</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Event Type</td>
-                            <td>
-                                <?= $requests['event_type']; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Venue</td>
-                            <td>
-                                <?= $requests['venue']; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Budget</td>
-                            <td>
-                                <?= $requests['budget']; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Ambiance</td>
-                            <td>
-                                <?= $requests['ambiance']; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Special Requests</td>
-                            <td>
-                                <?= $requests['special_requests']; ?>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
     <!-- Reviews section -->
     <section class="user_requests">
         <div class="container">
@@ -327,7 +278,7 @@ if (isset ($_GET['requests_id'])) {
                         class="fas fa-plus"></i> Add Review</a>
             </div>
             <h2>User's Reviews</h2>
-            <?php if (!empty ($reviews)): ?>
+            <?php if (!empty($reviews)): ?>
                 <ul>
                     <?php foreach ($reviews as $review): ?>
                         <h2>
@@ -335,7 +286,7 @@ if (isset ($_GET['requests_id'])) {
                         </h2>
                         <li>
 
-                            <?php if (!empty ($userDetails) && !empty ($userDetails['pic'])): ?>
+                            <?php if (!empty($userDetails) && !empty($userDetails['pic'])): ?>
                                 <img src="<?= $userDetails['pic']; ?>" alt="Profile Picture" width="50">
                             <?php endif; ?>
                             <form method="post">

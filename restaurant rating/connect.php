@@ -8,7 +8,6 @@ function connectToDatabase() {
 
     return $conn;
 }
-
 $conn = connectToDatabase();
 $conn_abarzosa = mysqli_connect("sql.freedb.tech", "freedb_verna", "Q#M#snMx3?un9nA", "freedb_delivery");
 
