@@ -27,9 +27,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-// Get user details
-$userDetails = getUserDetails($_SESSION["venue_id"]);
-
 // Fetch booking details
 $booking = $venue = $reviews = [];
 if (isset($_GET['booking_id'])) {
@@ -63,16 +60,33 @@ if (isset($_GET['booking_id'])) {
     <title>Booking Details</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <style>
-        /* CSS styles */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: Poppins, sans-serif;
+            background-color: #e6e9f0;
             margin: 0;
             padding: 0;
         }
 
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+
         .header {
-            background-color: #152238;
+            background-color: #000;
             color: #fff;
             padding: 10px;
             display: flex;
@@ -105,7 +119,7 @@ if (isset($_GET['booking_id'])) {
 
         .container {
             max-width: calc(100% - 440px);
-            padding: 100px;
+            padding: 50px;
             margin-left: 30%;
             margin-right: 50px;
             margin-top: 20px;
@@ -276,7 +290,7 @@ if (isset($_GET['booking_id'])) {
 
         .venue-details h3 {
             font-size: 24px;
-            color: #333;
+            color: #1a3685;
             margin-bottom: 20px;
         }
 
@@ -290,7 +304,6 @@ if (isset($_GET['booking_id'])) {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
-            margin-bottom: 20px;
         }
 
 
@@ -300,41 +313,38 @@ if (isset($_GET['booking_id'])) {
 </head>
 
 <body>
-
-    <!-- Header section -->
     <div class="header">
-        <h1>Booking Details</h1>
+        <h1>RateMeister</h1>
         <div>
-            <a href="profile.php" class="profile-icon"><i class="fas fa-user-circle"></i></a>
+            <a href="#" class="profile-icon"><i class="fas fa-user-circle"></i></a>
             <a href="logout.php" class="logout-icon"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar-wrapper">
-        <h2>Dashboard</h2>
-        <ul>
-            <a href="all_posts.php" class="sidebar-button">Home</a>
-            <a href="actlogs.php" class="sidebar-button">Activity Logs</a>
-    </div>
 
-    <!-- Booking details section -->
     <section class="venue-details">
         <div class="container">
             <?php if (isset($booking['id']) && isset($venue['id'])): ?>
                 <h3>Venue Details</h3>
-                <div class="venue-info">
-                    <p><strong>Name:</strong> <?= $venue['venue_name']; ?></p>
-                    <?php if (!empty($venue['venue_image'])): ?>
-                        <div class="venue-image">
-                            <img src="images/jpg;base64,<?= base64_encode($venue['venue_image']); ?>" alt="Venue Image">
+                <div class="row">
+                    <div class="col-md-4">
+                        <?php if (!empty($venue['venue_image'])): ?>
+                            <div class="venue-image mb-3">
+                                <img src="images/jpg;base64,<?= base64_encode($venue['venue_image']); ?>" class="img-fluid"
+                                    alt="Venue Image">
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="venue-info">
+                            <p><strong>Name:</strong> <?= $venue['venue_name']; ?></p>
+                            <p><strong>Description:</strong> <?= $venue['description']; ?></p>
+                            <p><strong>Location:</strong> <?= $venue['location']; ?></p>
+                            <p><strong>Contact:</strong> <?= $venue['contact']; ?></p>
+                            <p><strong>Capacity:</strong> <?= $venue['capacity']; ?></p>
+                            <p><strong>Facilities:</strong> <?= $venue['facilities']; ?></p>
                         </div>
-                    <?php endif; ?>
-                    <p><strong>Description:</strong> <?= $venue['description']; ?></p>
-                    <p><strong>Location:</strong> <?= $venue['location']; ?></p>
-                    <p><strong>Contact:</strong> <?= $venue['contact']; ?></p>
-                    <p><strong>Capacity:</strong> <?= $venue['capacity']; ?></p>
-                    <p><strong>Facilities:</strong> <?= $venue['facilities']; ?></p>
+                    </div>
                 </div>
             <?php else: ?>
                 <p>No booking or venue found.</p>
@@ -347,37 +357,37 @@ if (isset($_GET['booking_id'])) {
     <section class="booking-reviews">
         <div class="container">
             <div class="add-review">
-                <a href="add_review.php?booking_id=<?= $booking_id ?>" class="inline-btn">Add Review</a>
-                <h2>User's Reviews</h2>
+                <a href="add_review.php?booking_id=<?= $booking_id ?>" class="inline-btn">Rate</a>
+                <h2>Booking Reviews:</h2>
                 <?php if (!empty($reviews)): ?>
                     <ul>
                         <?php foreach ($reviews as $review): ?>
-                                <!-- Display logged-in user's email -->
-                                <p>
-                                    <?= $_SESSION['email']; ?>
-                                </p>
-                                <?php if (!empty($userDetails) && !empty($userDetails['pic'])): ?>
-                                    <img src="<?= $userDetails['pic']; ?>" alt="Profile Picture" width="50">
-                                <?php endif; ?>
-                                <form method="post">
-                                    <input type="hidden" name="delete_review" value="<?= $review['id']; ?>">
-                                    <button type="submit">Delete</button>
-                                </form>
-                                <p>
-                                    <?= $review['comment']; ?>
-                                </p>
-                                <p>Rating:
-                                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                                        <?php if ($i <= $review['rating']): ?>
-                                            <i class="fas fa-star checked"></i>
-                                        <?php else: ?>
-                                            <i class="fas fa-star"></i>
-                                        <?php endif; ?>
-                                    <?php endfor; ?>
-                                </p>
-                                <p>Date:
-                                    <?= $review['date']; ?>
-                                </p>
+                            <!-- Display logged-in user's email -->
+                            <p>
+                                <?= $_SESSION['email']; ?>
+                            </p>
+                            <?php if (!empty($userDetails) && !empty($userDetails['pic'])): ?>
+                                <img src="<?= $userDetails['pic']; ?>" alt="Profile Picture" width="50">
+                            <?php endif; ?>
+                            <form method="post">
+                                <input type="hidden" name="delete_review" value="<?= $review['id']; ?>">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                            <p>
+                                <?= $review['comment']; ?>
+                            </p>
+                            <p>Rating:
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <?php if ($i <= $review['rating']): ?>
+                                        <i class="fas fa-star checked"></i>
+                                    <?php else: ?>
+                                        <i class="fas fa-star"></i>
+                                    <?php endif; ?>
+                                <?php endfor; ?>
+                            </p>
+                            <p>Date:
+                                <?= $review['date']; ?>
+                            </p>
                         <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
@@ -386,6 +396,10 @@ if (isset($_GET['booking_id'])) {
             </div>
         </div>
     </section>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 

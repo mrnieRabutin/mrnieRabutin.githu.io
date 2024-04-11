@@ -8,21 +8,21 @@ $username_err = $password_err = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validate username
-    if (empty (trim($_POST["username"]))) {
+    if (empty(trim($_POST["username"]))) {
         $username_err = "Please enter username.";
     } else {
         $username = trim($_POST["username"]);
     }
 
     // Validate password
-    if (empty (trim($_POST["password"]))) {
+    if (empty(trim($_POST["password"]))) {
         $password_err = "Please enter your password.";
     } else {
         $password = trim($_POST["password"]);
     }
 
     // Check input errors before processing the database
-    if (empty ($username_err) && empty ($password_err)) {
+    if (empty($username_err) && empty($password_err)) {
         // Prepare a select statement
         $sql = "SELECT id, email, password FROM users WHERE email = ?";
 
@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 5px;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            width: 500px;
             max-width: 80%;
             /* Limit the maximum width of the form */
         }
@@ -129,18 +129,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .btn-primary {
             color: #fff;
-            background-color: #FF5F1F;
-        
+            background-color: #0583d2;
+
         }
     </style>
 </head>
 
 <body>
 
-    <div class="login-container">
-        <div class="login-image">
-            <img src="images/rate.png" alt="Image">
-        </div>
+<div class="login-container">
         <div class="login-box">
             <h2>Login</h2>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
@@ -166,6 +163,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
+    <script>
+        var images = ['images/rate.jpg', 'images/review.jpg', 'images/m.jpg'];
+        var currentIndex = 0;
+
+        function changeBackground() {
+            document.body.style.backgroundImage = "url('" + images[currentIndex] + "')";
+            currentIndex = (currentIndex + 1) % images.length;
+        }
+
+        changeBackground();
+
+        setInterval(changeBackground, 5000); 
+    </script>
+
 </body>
 
-</html>
+</html>  

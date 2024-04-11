@@ -111,7 +111,7 @@ if (isset($_POST['tableType']) && $_POST["tableType"] === "User_Requests") {
                             echo "<p>$review</p>";
                         }
                     } else {
-                        echo "<p>No reviews available.</p>";
+                        echo "<p>0 Review</p>";
                     }
                     ?>
                 </div>
@@ -214,7 +214,7 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Products") {
     
                     ?>
                     <div class="box">
-                    <div class="product-image">
+                        <div class="product-image">
                             <img src="images" alt="<?= $product_name; ?>">
                         </div>
                         <p class="total-items">Product Name:
@@ -248,12 +248,7 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Products") {
                         }
                         echo '<div class="rating">' . $stars . '</div>';
                         ?>
-                        <!-- Display "No reviews available" if rating is empty -->
-                        <?php
-                        if (empty($average_rating_row['average_rating'])) {
-                            echo '<p>No reviews available</p>';
-                        }
-                        ?>
+                    
                         <!-- Add more details as needed -->
                         <a href="view_product.php?product_id=<?= $product_id; ?>" class="inline-btn">Rate Product</a>
                     </div>
@@ -351,6 +346,12 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Bookings") {
                             } else {
                                 echo '<i class="far fa-star"></i>'; // Empty star
                             }
+                        }
+                        ?>
+                        <?php
+                        // Display message if there are no reviews
+                        if ($reviews == 0) {
+                            echo '<div style="color: black;">0 Review</div>';
                         }
                         ?>
                     </div>

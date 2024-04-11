@@ -50,22 +50,38 @@ if ($result) {
     <title>Activity Logs</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <style>
         /* CSS styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f7f7f7;
+            background-color: #bfbfbf;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .logo img {
+            width: 50px;
+            height: auto;
         }
 
         .header {
-            background-color: #152238;
-            color: #fff;
+            background-color: #fff;
+            color: #000;
             padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .profile-container {
@@ -75,7 +91,7 @@ if ($result) {
 
         .profile-icon,
         .logout-icon {
-            color: #fff;
+            color: #000;
             text-decoration: none;
             font-size: 20px;
             margin-right: 10px;
@@ -117,22 +133,30 @@ if ($result) {
             float: left;
             width: 200px;
             height: 100vh;
-            background-color: #152238;
+            background-color: #000;
             color: #fff;
-            padding: 20px;
+            padding: 15px;
         }
 
-        .sidebar ul {
-            list-style-type: none;
-            /* Remove bullets */
+        .sidebar-wrapper ul {
+            list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        .sidebar ul li a {
+        .sidebar-wrapper ul li {
+            margin-bottom: 10px;
+            /* Add margin-bottom to create space between links */
+        }
+
+        .sidebar-wrapper ul li a {
+            display: block;
+            padding: 10px;
             color: #fff;
             text-decoration: none;
         }
+
+
 
         .sidebar-button {
             display: block;
@@ -160,9 +184,10 @@ if ($result) {
 
         table {
             border-collapse: collapse;
-            margin: 50px auto;
+            margin-top: 50px auto;
             /* Added margin */
             width: 150vh;
+            margin-left: 10%;
 
         }
 
@@ -171,6 +196,7 @@ if ($result) {
             border: 1px solid #dddddd;
             text-align: left;
             padding: 12px;
+            margin-left: 50px;
         }
 
         th {
@@ -226,6 +252,11 @@ if ($result) {
             background-color: #ff4444;
             /* Lighter shade of red */
         }
+
+        a {
+            color: white;
+            background-color: transparent;
+        }
     </style>
 
 </head>
@@ -234,7 +265,7 @@ if ($result) {
 
     <!-- Header section -->
     <div class="header">
-        <h1>Restaurant Review System</h1>
+        <h1>RateMeister</h1>
         <div>
             <a href="profile.php" class="profile-icon"><i class="fas fa-user-circle"></i></a>
             <a href="logout.php" class="logout-icon"><i class="fas fa-sign-out-alt"></i></a>
@@ -244,8 +275,8 @@ if ($result) {
     <div class="sidebar-wrapper">
         <h2>Activity Logs</h2>
         <ul>
-            <a href="all_posts.php" class="sidebar-button">Home</a>
-            <a href="actlogs.php" class="sidebar-button">Activity Logs</a>
+        <li><a href="all_posts.php"><i class="fas fa-home"></i>Home</a></li>
+        <li><a href="actlogs.php"><i class="fas fa-history"></i>Activity Logs</a></li>
         </ul>
     </div>
 

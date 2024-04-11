@@ -14,20 +14,41 @@ include 'connect.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://startbootstrap.com/template/simple-sidebar">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
         body {
             font-family: Arial, sans-serif;
+            background-color: #bfbfbf;
             margin: 0;
             padding: 0;
-            background-color: #f7f7f7;
         }
 
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .logo img {
+            width: 50px;
+            height: auto;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+
         .header {
-            background-color: #152238;
-            color: #fff;
-            padding: 40px;
+            background-color: white;
+            color: black;
+            padding: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -40,7 +61,7 @@ include 'connect.php';
 
         .profile-icon,
         .logout-icon {
-            color: #fff;
+            color: #000;
             text-decoration: none;
             font-size: 20px;
             margin-right: 10px;
@@ -53,13 +74,13 @@ include 'connect.php';
 
         .sidebar-wrapper {
             float: left;
-            width: 300px;
+            width: 200px;
             height: 100vh;
-            background-color: #152238;
+            background-color: #000;
             color: #fff;
-            padding: 70px 50px;
+            padding: 80px 60px;
             position: fixed;
-            margin-top: 8%;
+            margin-top: 5%;
             left: 0;
             z-index: 9;
             /* Ensure sidebar is behind the header */
@@ -77,12 +98,12 @@ include 'connect.php';
         }
 
         .sidebar-wrapper ul li {
-            margin-bottom: 10px;
+            margin-bottom: 30px;
         }
 
         .sidebar-button {
             display: block;
-            padding: 10px;
+            padding: 20px;
             background-color: transparent;
             color: #fff;
             text-decoration: none;
@@ -95,51 +116,53 @@ include 'connect.php';
 
         .content {
             margin-left: 250px;
-            /* Adjust this value based on the sidebar width */
             padding-top: 80px;
-            /* Match the header height */
         }
 
-        /* Box Styles */
         .all-items {
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
-            align-items: flex-start;
-            padding: 20px;
-            position: relative;
-            padding-right: 40px;
-            margin-top: 50px;
-            margin-left: 40px;
+            padding: 30px;
+            margin-top: 60px;
+            font-size: 18px;
+            
         }
 
+        .venue-name {
+            color: #0077b6;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+
         .box {
-            width: 200%;
-            margin-top: 70px;
+            width: 400px;
+            margin-right: 20px;
+            margin-bottom: 50px;
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s ease;
             text-align: center;
-        }
+            background-color: #ffffff;
 
-        .box-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 30px;
-        }
-
-        .box:hover {
-            transform: translateY(-5px);
         }
 
         .box img {
             width: 100%;
-            height: 200px;
+            height: auto;
             object-fit: cover;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
+        }
+
+        .box-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .title {
@@ -157,23 +180,27 @@ include 'connect.php';
 
         .inline-btn {
             display: block;
-            width: 100%;
-            padding: 10px 0;
+            width: 90px;
+            padding: 5px;
             background-color: #007bff;
             color: #fff;
             text-decoration: none;
-            text-align: center;
-            border-radius: 0 0 8px 8px;
+            border-radius: 10px;
             transition: background-color 0.3s;
+            font-size: 13px;
         }
 
         .inline-btn:hover {
             background-color: #0056b3;
         }
 
+        a {
+            color: white;
+            background-color: transparent;
+        }
+
         .rating {
             color: #ffd700;
-            /* Change star color to yellow */
         }
     </style>
 </head>
@@ -181,18 +208,22 @@ include 'connect.php';
 <body>
 
     <div class="header">
-        <h1>Restaurant Review System</h1>
+        <div class="logo">
+            <img src="images/k.png" alt="Logo">
+        </div>
+        <h1>RateMeister</h1>
         <div>
             <a href="#" class="profile-icon"><i class="fas fa-user-circle"></i></a>
             <a href="logout.php" class="logout-icon"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </div>
 
+
     <div class="sidebar-wrapper">
         <h2>Dashboard</h2>
         <ul>
-            <li><a href="all_posts.php" class="sidebar-button">Home</a></li>
-            <li><a href="actlogs.php" class="sidebar-button">Activity Logs</a></li>
+            <li><a href="all_posts.php"><i class="fas fa-home"></i>Home</a></li>
+            </li><a href="actlogs.php"><i class="fas fa-history"></i>Activity Logs</a></li>
         </ul>
     </div>
 
@@ -223,34 +254,45 @@ include 'connect.php';
                         $venue_image = $fetch_booking['venue_image'];
                         $description = $fetch_booking['description'];
                         $bookingStatus = $fetch_booking['bookingStatus'];
+                        $reviews = $fetch_booking['reviews'];
                         ?>
                         <div class="box">
                             <img src="<?= $venue_image; ?>" class="venue-image">
-                            <h3 class="total-items">
-                                <?= $venue_name; ?>
-                            </h3>
-                            </h3>
-                            <h3 class="total-items">Description:
-                                <?= $description; ?>
-                            </h3>
-                            <h3 class="total-items">Status:
-                                <?= $bookingStatus; ?>
-                            </h3>
-                            <div class="rating">
-                                <?php
-                                // Display star rating
-                                $reviews = $fetch_booking['reviews'];
-                                for ($i = 1; $i <= 5; $i++) {
-                                    if ($i <= $reviews) {
-                                        echo '<i class="fas fa-star"></i>'; // Full star
-                                    } else {
-                                        echo '<i class="far fa-star"></i>'; // Empty star
+                            <div class="box-content">
+                                <h3 class="total-items venue-name">
+                                    <?= $venue_name; ?>
+                                </h3>
+                                <h3 class="total-items description">
+                                    Description: <?= $description; ?>
+                                </h3>
+                                <h3 class="total-items status">
+                                    Status: <?= $bookingStatus; ?>
+                                </h3>
+                                <div class="rating">
+                                    <?php
+                                    // Display star rating
+                                    $reviews = $fetch_booking['reviews'];
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        if ($i <= $reviews) {
+                                            echo '<i class="fas fa-star"></i>'; // Full star
+                                        } else {
+                                            echo '<i class="far fa-star"></i>'; // Empty star
+                                        }
                                     }
-                                }
-                                ?>
+                                    ?>
+                                    <?php
+                                    // Display message if there are no reviews
+                                    if ($reviews == 0) {
+                                        echo '<div style="color: black;">0 Review</div>';
+                                    }
+                                    ?>
+                                </div>
+
+
+                                <a href="view_post.php?booking_id=<?= $booking_id; ?>" class="inline-btn">Rate Booking</a>
                             </div>
-                            <a href="view_post.php?booking_id=<?= $booking_id; ?>" class="inline-btn">Rate Booking</a>
                         </div>
+
                         <?php
                     }
                 } else {
