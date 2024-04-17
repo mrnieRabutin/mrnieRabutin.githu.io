@@ -15,11 +15,13 @@ include 'connect.php';
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://startbootstrap.com/template/simple-sidebar">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
         body {
             font-family: Arial, sans-serif;
             background-color: #bfbfbf;
@@ -126,7 +128,7 @@ include 'connect.php';
             padding: 30px;
             margin-top: 60px;
             font-size: 18px;
-            
+
         }
 
         .venue-name {
@@ -245,7 +247,7 @@ include 'connect.php';
             <div class="tables">
                 <?php
                 $sql_bookings = $conn->prepare("SELECT * FROM `bookings` ");
-                $sql_bookings->execute(); // Execute the query
+                $sql_bookings->execute();
                 $result = $sql_bookings->get_result();
                 if ($result->num_rows > 0) {
                     while ($fetch_booking = $result->fetch_assoc()) {
@@ -257,7 +259,7 @@ include 'connect.php';
                         $reviews = $fetch_booking['reviews'];
                         ?>
                         <div class="box">
-                        <img src="venue/<?= $venue_image; ?>" alt="<?= $venue_name; ?>">
+                            <img src="venue/<?= $venue_image; ?>" alt="<?= $venue_name; ?>">
                             <div class="box-content">
                                 <h3 class="total-items venue-name">
                                     <?= $venue_name; ?>

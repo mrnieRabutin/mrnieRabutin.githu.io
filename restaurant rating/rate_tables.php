@@ -181,8 +181,7 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Products") {
             }
         </style>
         <?php
-        // Display user requests
-        $select_requests = $conn->prepare("SELECT * FROM product");
+        $select_requests = $conn_abarzosa->prepare("SELECT * FROM product");
 
         $select_requests->execute();
         if ($select_requests === false) {
@@ -208,7 +207,7 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Products") {
 
                     // Calculate average rating for the product
                     $query = "SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = '$product_id'";
-                    $result1 = mysqli_query($conn, $query);
+                    $result1 = mysqli_query($conn_abarzosa, $query);
                     $average_rating_row = $result1->fetch_assoc();
                     $average_rating = number_format($average_rating_row['average_rating'], 1); // Format to one decimal place
     

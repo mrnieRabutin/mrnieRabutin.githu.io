@@ -321,8 +321,6 @@ if (isset($_GET['booking_id'])) {
         </div>
     </div>
 
-    <a href="all_posts.php" class="btn btn-secondary ml-3 mb-3">Back</a>
-
     <section class="venue-details">
         <div class="container">
             <a href="all_posts.php" class="btn btn-secondary ml-3 mb-3">Back</a>
