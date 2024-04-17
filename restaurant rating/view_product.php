@@ -1,56 +1,53 @@
 <?php
+session_start();
+$email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
+
 include 'connect.php';
 
 function getProductDetails($productId)
 {
     global $conn;
-    $stmt = $conn->prepare("SELECT product_name, image FROM product WHERE id = ?");
+    $stmt = $conn->prepare("SELECT product_name, product_type ,description, price ,image FROM product WHERE id = ?");
     $stmt->execute([$productId]);
     return $stmt->get_result()->fetch_assoc();
+}
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['comment'], $_POST['rating'], $_GET['product_id'])) {
+    $product_id = $_GET['product_id'];
+    $comment = $_POST['comment'];
+    $rating = $_POST['rating'];
+    $username = $email;
+    $date = date("Y-m-d H:i:s");
+
+    // Insert review into database
+    $insert_review = $conn->prepare("INSERT INTO `reviews` (product_id, username, comment, rating, date) VALUES (?, ?, ?, ?, ?)");
+    $insert_review->bind_param("issis", $product_id, $username, $comment, $rating, $date);
+    $insert_review->execute();
+
+    // Redirect to same page after form submission to prevent form resubmission
+    header("Location: {$_SERVER['PHP_SELF']}?product_id=$product_id");
+    exit();
 }
 
 if (isset($_GET['product_id'])) {
     $product_id = $_GET['product_id'];
 
-    $select_product = $conn->prepare("SELECT id, product_name, product_type, description, price FROM `product` WHERE id = ?");
-    $select_product->execute([$product_id]);
-    $product_result = $select_product->get_result();
-    $product = $product_result->fetch_assoc();
-
+    // Fetch product details
+    $productDetails = getProductDetails($product_id);
 
     // Fetch reviews for the product
     $select_reviews = $conn->prepare("SELECT * FROM `reviews` WHERE product_id = ?");
-    $select_reviews->bind_param("i", $product_id); // Assuming product_id is an integer
+    $select_reviews->bind_param("i", $product_id);
     $select_reviews->execute();
     $reviews_result = $select_reviews->get_result();
 
     // Fetch all rows as an associative array
-    $reviews = array();
+    $reviews = [];
     while ($row = $reviews_result->fetch_assoc()) {
         $reviews[] = $row;
     }
-
-
-    // Calculate average rating
-    $total_reviews = count($reviews);
-    $total_rating = 0;
-    foreach ($reviews as $review) {
-        $total_rating += $review['rating'];
-    }
-    $average_rating = ($total_reviews > 0) ? round($total_rating / $total_reviews, 1) : 0;
-
-    if (isset($_POST['delete_review'])) {
-        $review_id = $_POST['delete_review'];
-        $delete_review = $conn->prepare("DELETE FROM `reviews` WHERE id = ?");
-        $delete_review->execute([$review_id]);
-        header("Location: {$_SERVER['PHP_SELF']}?product_id=$product_id");
-        exit();
-    }
-
-    // Fetch product details
-    $productDetails = getProductDetails($product['id']);
 } else {
+    // Redirect if product ID is not provided
     header("Location: add_review.php");
     exit();
 }
@@ -63,24 +60,46 @@ if (isset($_GET['product_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
     <style>
-        /* Add your CSS styles here */
-        /* CSS styles */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: Poppins, sans-serif;
+            background-color: #e6e9f0;
             margin: 0;
             padding: 0;
         }
 
         .header {
-            background-color: #152238;
+            background-color: #000;
             color: #fff;
             padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info i {
+            margin-right: 7px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .profile-container {
@@ -102,282 +121,169 @@ if (isset($_GET['product_id'])) {
         }
 
         .container {
-            max-width: calc(100% - 440px);
-            padding: 20px;
-            margin-left: 30%;
-            margin-right: 50px;
-        }
-
-        .all-bookings {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            align-items: flex-start;
-            padding: 0px;
-            margin-left: 220px;
-        }
-
-        .box-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            align-items: center;
-        }
-
-        .box {
-            width: calc(33.33% - 20px);
-            margin-right: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-
-        .heading {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .box img {
-            width: 100%;
-            height: auto;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .title {
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-
-        .total-reviews {
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .inline-btn {
-            display: inline-block;
-            padding: 5px 10px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .inline-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .sidebar-wrapper {
-            float: left;
-            width: 200px;
-            height: 100vh;
-            background-color: #152238;
-            color: #fff;
+            max-width: 800px;
+            margin: 20px auto;
+            /* Center the container */
             padding: 20px;
         }
 
-        .sidebar ul li a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .sidebar-button {
-            display: block;
-            width: 100px;
-            padding: 20px;
-            margin-top: 20px;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.3s;
-            text-align: center;
-            font-size: 16px;
-        }
-
-        .sidebar-button:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
-        }
-
-        .content-wrapper {
-            margin-left: 240px;
-            padding: 20px;
-        }
-
-        /* CSS styles */
-        .rating {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .fa {
-            font-size: 24px;
+        .rating .fa {
             color: #FFD700;
+            font-size: 24px;
         }
 
         .checked {
             color: #FFD700;
         }
 
-        table {
-            border-collapse: collapse;
-            width: 90%;
-            margin: auto;
+        .review-container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 10px;
         }
 
-        th,
-        td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 12px;
+        .delete-btn {
+            cursor: pointer;
         }
 
-        th {
-            background-color: #f2f2f2;
-            font-size: 16px;
+        .product-details-container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+
         }
 
-        td {
-            font-size: 14px;
-        }
 
-        .product-details {
-            padding: 20px 0;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .section-title {
+        .product-details-header {
             font-size: 24px;
-            color: #333;
+            font-weight: bold;
             margin-bottom: 20px;
         }
 
-        .product-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .product-image {
-            width: 200px;
-            margin-right: 20px;
-        }
-
-        .product-image img {
-            width: 100%;
+        .product-details img {
+            max-width: 200px;
+            /* Limit image width */
             height: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Maintain aspect ratio */
+            border-radius: 5px;
+            /* Add border radius */
         }
 
-        .product-description {
-            flex: 1;
-        }
-
-        .product-description h4 {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .product-type {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .price {
-            font-size: 18px;
-            color: #007bff;
-            margin-bottom: 10px;
-        }
-
-        .description {
-            font-size: 16px;
-            color: #555;
-            line-height: 1.5;
+        .product-details {
+            text-align: left;
+            margin-left: 20px;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Header section -->
     <div class="header">
-        <h1>Restaurant Review System</h1>
-
+        <h1>RateMeister</h1>
         <div>
-            <!-- Add your profile and logout links here -->
             <a href="profile.php" class="profile-icon"><i class="fas fa-user-circle"></i></a>
             <a href="logout.php" class="logout-icon"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </div>
 
-    <div class="sidebar-wrapper">
-        <h2>Dashboard</h2>
-        <ul>
-            <a href="all_posts.php" class="sidebar-button">Home</a>
-            <a href="actlogs.php" class="sidebar-button">Activity Logs</a>
-        </ul>
-    </div>
+    <a href="all_posts.php" class="btn btn-secondary ml-3 mb-3">Back</a>
 
-    <!-- Reviews section -->
-    <section class="user_requests">
-        <div class="container">
-            <div class="request-review">
-                <!-- Font Awesome Library -->
-                <link rel="stylesheet"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-                <a href="product_review.php?product_id=<?= $product_id; ?>" class="inline-btn"><i
-                        class="fas fa-plus"></i> Add Review</a>
+    <div class="container">
+        <div class="product-details-container">
+            <!-- Product Image -->
+            <img src="images/<?= $productDetails['image']; ?>" alt="Product Image" class="mr-3"
+                style="max-width: 200px;">
+
+            <!-- Product Details -->
+            <div class="product-details">
+                <h2 class="product-details-header">Product</h2>
+                <h2><?= $productDetails['product_name']; ?></h2>
+                <p>Product Type: <?= $productDetails['product_type']; ?></p>
+                <p>Description: <?= $productDetails['description']; ?></p>
+                <p>Price: $<?= $productDetails['price']; ?></p>
             </div>
-            <h2>User's Reviews</h2>
+        </div>
+
+        <!-- Add Review Button -->
+        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#exampleModal">
+            Add Review
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Review</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            <div class="form-group">
+                                <label for="comment">Comment:</label>
+                                <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="rating">Rating:</label>
+                                <select class="form-control" id="rating" name="rating">
+                                    <option value="1">1 Star</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="5">5 Stars</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <h2>Product Reviews:</h2>
+        <div id="reviewsContainer">
             <?php if (!empty($reviews)): ?>
-                <ul>
-                    <?php foreach ($reviews as $review): ?>
-                        <h2>
-                            <?= $review['username']; ?>
-                        </h2>
-                    
-
-                            <img src="images/<?php echo $userDetails['image']; ?>" alt="" width="50">
-
-                            <form method="post">
-                                <input type="hidden" name="delete_review" value="<?= $review['id']; ?>">
-                                <button class="btn btn-danger" type="submit">Delete</button>
-                            </form>
-                            <p>
-                                <?= $review['comment']; ?>
-                            </p>
-                            <p>Rating:
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <?php if ($i <= $review['rating']): ?>
-                                        <i class="fas fa-star checked"></i>
-                                    <?php else: ?>
-                                        <i class="fas fa-star"></i>
-                                    <?php endif; ?>
-                                <?php endfor; ?>
-                            </p>
-                            <p>Date:
-                                <?= $review['date']; ?>
-                            </p>
-                    
-                    <?php endforeach; ?>
-                </ul>
+                <?php foreach ($reviews as $review): ?>
+                    <div class="review-container">
+                        <div class="user-info">
+                            <i class="fas fa-user"></i>
+                            <h4><?= $review['username']; ?></h4>
+                        </div>
+                        <p><?= $review['comment']; ?></p>
+                        <p class="rating">Rating:
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <?php if ($i <= $review['rating']): ?>
+                                    <i class="fas fa-star checked"></i>
+                                <?php else: ?>
+                                    <i class="fas fa-star"></i>
+                                <?php endif; ?>
+                            <?php endfor; ?>
+                        </p>
+                        <p>Date: <?= $review['date']; ?></p>
+                    </div>
+                <?php endforeach; ?>
             <?php else: ?>
                 <p>No reviews added yet!</p>
             <?php endif; ?>
         </div>
-    </section>
+
+        <!-- Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

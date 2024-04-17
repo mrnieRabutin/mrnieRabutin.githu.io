@@ -257,7 +257,7 @@ include 'connect.php';
                         $reviews = $fetch_booking['reviews'];
                         ?>
                         <div class="box">
-                            <img src="<?= $venue_image; ?>" class="venue-image">
+                        <img src="venue/<?= $venue_image; ?>" alt="<?= $venue_name; ?>">
                             <div class="box-content">
                                 <h3 class="total-items venue-name">
                                     <?= $venue_name; ?>

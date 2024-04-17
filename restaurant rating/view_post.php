@@ -321,17 +321,19 @@ if (isset($_GET['booking_id'])) {
         </div>
     </div>
 
+    <a href="all_posts.php" class="btn btn-secondary ml-3 mb-3">Back</a>
 
     <section class="venue-details">
         <div class="container">
+            <a href="all_posts.php" class="btn btn-secondary ml-3 mb-3">Back</a>
             <?php if (isset($booking['id']) && isset($venue['id'])): ?>
                 <h3>Venue Details</h3>
                 <div class="row">
                     <div class="col-md-4">
                         <?php if (!empty($venue['venue_image'])): ?>
                             <div class="venue-image mb-3">
-                                <img src="images/jpg;base64,<?= base64_encode($venue['venue_image']); ?>" class="img-fluid"
-                                    alt="Venue Image">
+                                <img src="venue/<?php echo $venue['venue_image']; ?>" alt="Venue Image" class="img-fluid"
+                                    style="max-width: 200px;">
                             </div>
                         <?php endif; ?>
                     </div>
@@ -351,6 +353,7 @@ if (isset($_GET['booking_id'])) {
             <?php endif; ?>
         </div>
     </section>
+
 
 
     <!-- Reviews section -->

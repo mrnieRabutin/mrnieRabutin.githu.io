@@ -215,7 +215,7 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Products") {
                     ?>
                     <div class="box">
                         <div class="product-image">
-                            <img src="images" alt="<?= $product_name; ?>">
+                            <img src="images/<?= $product_img; ?>" alt="<?= $product_name; ?>">
                         </div>
                         <p class="total-items">Product Name:
                             <?= $product_name; ?>
@@ -248,7 +248,7 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Products") {
                         }
                         echo '<div class="rating">' . $stars . '</div>';
                         ?>
-                    
+
                         <!-- Add more details as needed -->
                         <a href="view_product.php?product_id=<?= $product_id; ?>" class="inline-btn">Rate Product</a>
                     </div>
@@ -323,9 +323,14 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Bookings") {
                 $venue_image = $fetch_booking['venue_image'];
                 $description = $fetch_booking['description'];
                 $bookingStatus = $fetch_booking['bookingStatus'];
+
+                $query = "SELECT AVG(rating) AS average_rating FROM reviews WHERE booking_id = '$booking_id'";
+                $result1 = mysqli_query($conn, $query);
+                $average_rating_row = $result1->fetch_assoc();
+                $average_rating = number_format($average_rating_row['average_rating'], 1);
                 ?>
                 <div class="box">
-                    <img src="<?= $venue_image; ?>" class="venue-image">
+                    <img src="venue/<?= $venue_image; ?>" alt="<?= $venue_name; ?>">
                     <h3 class="total-items">
                         <?= $venue_name; ?>
                     </h3>
@@ -336,25 +341,23 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Bookings") {
                     <h3 class="total-items">Status:
                         <?= $bookingStatus; ?>
                     </h3>
-                    <div class="rating">
-                        <?php
-                        // Display star rating
-                        $reviews = $fetch_booking['reviews'];
-                        for ($i = 1; $i <= 5; $i++) {
-                            if ($i <= $reviews) {
-                                echo '<i class="fas fa-star"></i>'; // Full star
-                            } else {
-                                echo '<i class="far fa-star"></i>'; // Empty star
-                            }
-                        }
-                        ?>
-                        <?php
-                        // Display message if there are no reviews
-                        if ($reviews == 0) {
-                            echo '<div style="color: black;">0 Review</div>';
-                        }
-                        ?>
+                    <div class="average-rating white">
+                        <?php echo $average_rating; ?> out of 5
                     </div>
+                    <?php
+              
+                    $stars = '';
+                    $rating = round($average_rating);
+                    for ($i = 1; $i <= 5; $i++) {
+                        if ($i <= $rating) {
+                            $stars .= '<i class="fas fa-star" style="color: #FFD700;"></i>';
+                        } else {
+                            $stars .= '<i class="far fa-star" style="color: #FFD700;"></i>';
+                        }
+                    }
+                    echo '<div class="rating">' . $stars . '</div>';
+                    ?>
+
                     <a href="view_post.php?booking_id=<?= $booking_id; ?>" class="inline-btn">Rate Booking</a>
                 </div>
                 <?php

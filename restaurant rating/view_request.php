@@ -55,22 +55,27 @@ if (isset($_GET['requests_id'])) {
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 
-    <!-- CSS and other meta tags -->
     <style>
-        /* CSS styles */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: Poppins, sans-serif;
+            background-color: #e6e9f0;
         }
 
         .header {
-            background-color: #152238;
+            background-color: #000;
             color: #fff;
             padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
         .profile-container {
@@ -249,9 +254,8 @@ if (isset($_GET['requests_id'])) {
 
 <body>
 
-    <!-- Header section -->
     <div class="header">
-        <h1>Users Requests</h1>
+        <h1>RateMeister</h1>
 
         <div>
             <a href="profile.php" class="profile-icon"><i class="fas fa-user-circle"></i></a>
@@ -259,15 +263,7 @@ if (isset($_GET['requests_id'])) {
         </div>
     </div>
 
-    <div class="sidebar-wrapper">
-        <h2>Dashboard</h2>
-        <ul>
-            <a href="all_posts.php" class="sidebar-button">Home</a>
-            <a href="actlogs.php" class="sidebar-button">Activity Logs</a>
-        </ul>
-    </div>
 
-    <!-- Reviews section -->
     <section class="user_requests">
         <div class="container">
             <div class="request-review">
@@ -317,6 +313,10 @@ if (isset($_GET['requests_id'])) {
         </div>
     </section>
 
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
