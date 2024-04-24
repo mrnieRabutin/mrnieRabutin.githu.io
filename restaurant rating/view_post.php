@@ -372,7 +372,6 @@ if (isset($_GET['booking_id'])) {
                             <?php endif; ?>
                             <form method="post">
                                 <input type="hidden" name="delete_review" value="<?= $review['id']; ?>">
-                                <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
                             <p>
                                 <?= $review['comment']; ?>

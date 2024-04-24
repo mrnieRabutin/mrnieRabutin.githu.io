@@ -344,7 +344,6 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Bookings") {
                         <?php echo $average_rating; ?> out of 5
                     </div>
                     <?php
-              
                     $stars = '';
                     $rating = round($average_rating);
                     for ($i = 1; $i <= 5; $i++) {

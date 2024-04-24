@@ -256,7 +256,12 @@ include 'connect.php';
                         $venue_image = $fetch_booking['venue_image'];
                         $description = $fetch_booking['description'];
                         $bookingStatus = $fetch_booking['bookingStatus'];
-                        $reviews = $fetch_booking['reviews'];
+
+                        $query = "SELECT AVG(rating) AS average_rating FROM reviews WHERE booking_id = '$booking_id'";
+                        $result1 = mysqli_query($conn, $query);
+                        $average_rating_row = $result1->fetch_assoc();
+                        $average_rating = number_format($average_rating_row['average_rating'], 1);
+
                         ?>
                         <div class="box">
                             <img src="venue/<?= $venue_image; ?>" alt="<?= $venue_name; ?>">
@@ -270,7 +275,9 @@ include 'connect.php';
                                 <h3 class="total-items status">
                                     Status: <?= $bookingStatus; ?>
                                 </h3>
-                                <div class="rating">
+                                <div class="average-rating white">
+                                        <?php echo $average_rating; ?> out of 5
+                                </div>
                                     <?php
                                     // Display star rating
                                     $reviews = $fetch_booking['reviews'];
