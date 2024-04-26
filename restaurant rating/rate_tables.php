@@ -43,14 +43,18 @@ if (isset($_POST['tableType']) && $_POST["tableType"] === "User_Requests") {
             }
 
             .total-items {
+                color: #000000;
+                font-weight: bold;
+                font-size: 18px;
                 margin-top: 10px;
                 margin-bottom: 5px;
                 font-size: 16px;
                 line-height: 1.5;
             }
+
         </style>
         <?php
-        // Display user requests
+
         $select_requests = $conn->prepare("SELECT u.id, venue, u.event_type, u.event_date, budget, start_time, end_time , guest_count, IFNULL(r.rating, 0) AS rating, GROUP_CONCAT(r.comment) AS comments
        FROM `user_requests` u 
        LEFT JOIN `reviews` r ON u.id = r.venue_id 
@@ -65,7 +69,7 @@ if (isset($_POST['tableType']) && $_POST["tableType"] === "User_Requests") {
             ?>
             <div class="box">
 
-                <p class="total-items">Venue:
+                <p class="total-items">
                     <?= $venue; ?>
                 </p>
                 <p class="total-items">Event:
@@ -205,7 +209,7 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Products") {
                     $product_price = $fetch_request['price'];
                     $product_quantity = $fetch_request['quantity'];
 
-                    // Calculate average rating for the product
+
                     $query = "SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = '$product_id'";
                     $result1 = mysqli_query($conn_abarzosa, $query);
                     $average_rating_row = $result1->fetch_assoc();
@@ -216,7 +220,7 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Products") {
                         <div class="product-image">
                             <img src="images/<?= $product_img; ?>" alt="<?= $product_name; ?>">
                         </div>
-                        <p class="total-items">Product Name:
+                        <p class="total-items">
                             <?= $product_name; ?>
                         </p>
                         <p class="total-items">Product Type:
@@ -248,7 +252,6 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Products") {
                         echo '<div class="rating">' . $stars . '</div>';
                         ?>
 
-                        <!-- Add more details as needed -->
                         <a href="view_product.php?product_id=<?= $product_id; ?>" class="inline-btn">Rate Product</a>
                     </div>
                     <?php
@@ -333,7 +336,6 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Bookings") {
                     <h3 class="total-items">
                         <?= $venue_name; ?>
                     </h3>
-                    </h3>
                     <h3 class="total-items">Description:
                         <?= $description; ?>
                     </h3>
@@ -341,7 +343,7 @@ if (isset($_POST["tableType"]) && $_POST["tableType"] === "Bookings") {
                         <?= $bookingStatus; ?>
                     </h3>
                     <div class="average-rating white">
-                        <?php echo $average_rating; ?> out of 5
+                        <?= $average_rating; ?> out of 5
                     </div>
                     <?php
                     $stars = '';

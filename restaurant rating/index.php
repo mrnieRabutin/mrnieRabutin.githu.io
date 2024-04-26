@@ -82,101 +82,112 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
+    <<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                background-image: url('images/slide.jpg');
+                filter: brightness(90%);
+                z-index: -1;
+            }
 
-        .login-container {
-            display: flex;
-            align-items: center;
-            /* Vertically center the content */
-            justify-content: center;
-            /* Horizontally center the content */
-            height: 100vh;
-            /* Make the container full height */
-        }
+            .login-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                z-index: -1;
+            }
 
-        .login-box {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 500px;
-            max-width: 80%;
-            /* Limit the maximum width of the form */
-        }
+            .login-box {
+                background: #000000;
+                color: #f4f4f4;
+                backdrop-filter: blur(10px);
+                border-radius: 5px;
+                padding: 50px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                width: 500px;
+                max-width: 80%;
 
-        .login-image {
-            flex: 0 0 auto;
-            /* Ensure the image doesn't grow or shrink */
-            max-width: 400px;
-            /* Set maximum width for the image */
-        }
+            }
 
-        .login-image img {
-            width: 100%;
-            /* Set the width of the image to 100% */
-            height: 65vh;
-            /* Allow the height to adjust proportionally */
-            border-radius: 5px;
-            /* Apply border-radius to match container */
-        }
+            .login-image {
+                flex: 0 0 auto;
+                max-width: 400px;
+            }
 
-        .btn-primary {
-            color: #fff;
-            background-color: #0583d2;
+            .login-image img {
+                width: 100%;
+                height: 65vh;
+                border-radius: 5px;
+            }
 
-        }
-    </style>
+            .btn-primary {
+                color: #fff;
+                width: 100%;
+                padding: 10px;
+                background-color: #e62e2e;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            .form-group {
+                position: relative;
+                margin-bottom: 20px;
+            }
+
+            .icon {
+                position: absolute;
+                top: 50%;
+                right: 10px;
+                transform: translateY(-50%);
+                color: #000;
+
+            }
+
+            .form-control {
+                padding-left: 30px;
+            }
+        </style>
 </head>
 
 <body>
 
-<div class="login-container">
+    <div class="login-container">
         <div class="login-box">
-            <h2>Login</h2>
+            <h2>LOG IN</h2>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                <div class="form-group <?php echo (!empty ($username_err)) ? 'has-error' : ''; ?>">
-                    <label>Username</label>
-                    <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
+                <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
+                    <input type="text" name="username" placeholder="Email" class="form-control"
+                        value="<?php echo $username; ?>">
+                        <span class="icon">
+                        <i class="fas fa-user"></i>
+                    </span>
                     <span class="help-block">
                         <?php echo $username_err; ?>
                     </span>
                 </div>
-                <div class="form-group <?php echo (!empty ($password_err)) ? 'has-error' : ''; ?>">
-                    <label>Password</label>
-                    <input type="password" name="password" class="form-control">
+                <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+                    <span class="icon">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input type="password" name="password" placeholder="Password" class="form-control">
                     <span class="help-block">
                         <?php echo $password_err; ?>
                     </span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" class="btn btn-primary" value="Login">
+                    <input type="submit" class="btn btn-primary" value="Log in">
                 </div>
                 <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
             </form>
         </div>
     </div>
 
-    <script>
-        var images = ['images/rate.jpg', 'images/review.jpg', 'images/m.jpg'];
-        var currentIndex = 0;
-
-        function changeBackground() {
-            document.body.style.backgroundImage = "url('" + images[currentIndex] + "')";
-            currentIndex = (currentIndex + 1) % images.length;
-        }
-
-        changeBackground();
-
-        setInterval(changeBackground, 5000); 
-    </script>
-
 </body>
 
-</html>  
+</html>

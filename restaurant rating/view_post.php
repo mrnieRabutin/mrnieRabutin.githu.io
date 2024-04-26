@@ -36,7 +36,6 @@ if (isset($_GET['booking_id'])) {
     $booking = $select_booking->fetch(PDO::FETCH_ASSOC);
 
     if ($booking) {
-        // Fetch venue details
         $venue_id = $booking['venue_id']; // Corrected variable name
         $sql_venue = $conn->prepare("SELECT * FROM venues WHERE id = ?");
         $sql_venue->execute([$venue_id]);
@@ -86,7 +85,7 @@ if (isset($_GET['booking_id'])) {
 
 
         .header {
-            background-color: #000;
+            background: linear-gradient(70deg, #cc1b1b, #c1853b);
             color: #fff;
             padding: 10px;
             display: flex;
@@ -182,7 +181,7 @@ if (isset($_GET['booking_id'])) {
         .inline-btn {
             display: inline-block;
             padding: 5px 10px;
-            background-color: #007bff;
+            background: linear-gradient(70deg, #cc1b1b, #c1853b);
             color: #fff;
             text-decoration: none;
             border-radius: 5px;
@@ -225,7 +224,7 @@ if (isset($_GET['booking_id'])) {
         }
 
         .sidebar-button:hover {
-            background-color: #45a049;
+            background-color: white;
             transform: scale(1.05);
         }
 
@@ -234,7 +233,6 @@ if (isset($_GET['booking_id'])) {
             padding: 20px;
         }
 
-        /* CSS styles */
         .rating {
             display: flex;
             align-items: center;
@@ -282,7 +280,7 @@ if (isset($_GET['booking_id'])) {
         }
 
         .venue-details {
-            background-color: #f9f9f9;
+            background-color: #ffffff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -290,13 +288,13 @@ if (isset($_GET['booking_id'])) {
 
         .venue-details h3 {
             font-size: 24px;
-            color: #1a3685;
+            color: #000000;
             margin-bottom: 20px;
         }
 
         .venue-info p {
             font-size: 16px;
-            color: #555;
+            color: #000000;
             margin-bottom: 10px;
         }
 
@@ -306,9 +304,6 @@ if (isset($_GET['booking_id'])) {
             border-radius: 8px;
         }
 
-
-
-        /* Your CSS styles here */
     </style>
 </head>
 
@@ -316,7 +311,7 @@ if (isset($_GET['booking_id'])) {
     <div class="header">
         <h1>RateMeister</h1>
         <div>
-            <a href="#" class="profile-icon"><i class="fas fa-user-circle"></i></a>
+            <a href="profile.php" class="profile-icon"><i class="fas fa-user-circle"></i></a>
             <a href="logout.php" class="logout-icon"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </div>

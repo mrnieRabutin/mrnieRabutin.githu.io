@@ -19,12 +19,13 @@ include 'connect.php';
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #bfbfbf;
+            background-color: #1B1212;
             margin: 0;
             padding: 0;
         }
@@ -48,8 +49,8 @@ include 'connect.php';
 
 
         .header {
-            background-color: white;
-            color: black;
+            background: linear-gradient(70deg, #cc1b1b, #c1853b);
+            color: whitesmoke;
             padding: 30px;
             display: flex;
             justify-content: space-between;
@@ -63,7 +64,7 @@ include 'connect.php';
 
         .profile-icon,
         .logout-icon {
-            color: #000;
+            color: whitesmoke;
             text-decoration: none;
             font-size: 20px;
             margin-right: 10px;
@@ -78,14 +79,13 @@ include 'connect.php';
             float: left;
             width: 200px;
             height: 100vh;
-            background-color: #000;
+            background-color: #000000;
             color: #fff;
             padding: 80px 60px;
             position: fixed;
             margin-top: 5%;
             left: 0;
             z-index: 9;
-            /* Ensure sidebar is behind the header */
         }
 
         .sidebar-wrapper h2 {
@@ -132,7 +132,7 @@ include 'connect.php';
         }
 
         .venue-name {
-            color: #0077b6;
+            color: #000000;
             font-weight: bold;
             font-size: 18px;
         }
@@ -148,7 +148,7 @@ include 'connect.php';
             overflow: hidden;
             transition: transform 0.3s ease;
             text-align: center;
-            background-color: #ffffff;
+            background-color: whitesmoke;
 
         }
 
@@ -184,7 +184,7 @@ include 'connect.php';
             display: block;
             width: 90px;
             padding: 5px;
-            background-color: #007bff;
+            background: linear-gradient(70deg, #cc1b1b, #c1853b);
             color: #fff;
             text-decoration: none;
             border-radius: 10px;
@@ -193,7 +193,7 @@ include 'connect.php';
         }
 
         .inline-btn:hover {
-            background-color: #0056b3;
+            background-color: #ffffff;
         }
 
         a {
@@ -210,15 +210,17 @@ include 'connect.php';
 <body>
 
     <div class="header">
-        <div class="logo">
-            <img src="images/k.png" alt="Logo">
-        </div>
-        <h1>RateMeister</h1>
+        <h1>
+            <i class="fas fa-crown"></i>
+            RateMeister
+            <a href="https://www.flaticon.com/free-icons/headhunter"></a>
+        </h1>
         <div>
-            <a href="#" class="profile-icon"><i class="fas fa-user-circle"></i></a>
+            <a href="profile.php" class="profile-icon"><i class="fas fa-user-circle"></i></a>
             <a href="logout.php" class="logout-icon"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </div>
+
 
 
     <div class="sidebar-wrapper">
@@ -276,160 +278,154 @@ include 'connect.php';
                                     Status: <?= $bookingStatus; ?>
                                 </h3>
                                 <div class="average-rating white">
-                                        <?php echo $average_rating; ?> out of 5
+                                    <?php echo $average_rating; ?> out of 5
                                 </div>
-                                    <?php
-                                    // Display star rating
-                                    $reviews = $fetch_booking['reviews'];
-                                    for ($i = 1; $i <= 5; $i++) {
-                                        if ($i <= $reviews) {
-                                            echo '<i class="fas fa-star"></i>'; // Full star
-                                        } else {
-                                            echo '<i class="far fa-star"></i>'; // Empty star
-                                        }
+                                <?php
+                                $stars = '';
+                                $rating = round($average_rating);
+                                for ($i = 1; $i <= 5; $i++) {
+                                    if ($i <= $rating) {
+                                        $stars .= '<i class="fas fa-star" style="color: #FFD700;"></i>';
+                                    } else {
+                                        $stars .= '<i class="far fa-star" style="color: #FFD700;"></i>';
                                     }
-                                    ?>
-                                    <?php
-                                    // Display message if there are no reviews
-                                    if ($reviews == 0) {
-                                        echo '<div style="color: black;">0 Review</div>';
-                                    }
-                                    ?>
-                                </div>
+                                }
+                                echo '<div class="rating">' . $stars . '</div>';
+                                ?>
 
-
-                                <a href="view_post.php?booking_id=<?= $booking_id; ?>" class="inline-btn">Rate Booking</a>
                             </div>
+                            <a href="view_post.php?booking_id=<?= $booking_id; ?>" class="inline-btn">Rate Booking</a>
                         </div>
+                    </div>
 
-                        <?php
+                    <?php
                     }
                 } else {
                     echo '<p class="empty">No bookings added yet!</p>';
                 }
                 ?>
-            </div>
-        </section>
-        <!-- Profile modal -->
-        <div id="profileModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <!-- Profile content -->
-                <div class="profile-info">
-                    <div class="profile-picture">
-                        <!-- Display user's profile picture -->
-                        <?php
-                        // Check if $_SESSION["pic"] is set and not empty
-                        if (isset($_SESSION["pic"]) && !empty($_SESSION["pic"])) {
-                            // If it's set and not empty, use it to display the profile picture
-                            ?>
-                            <!-- Display user's profile picture -->
-                            <img src="../images/<?= $_SESSION["pic"]; ?>" alt="Profile Picture">
-                            <?php
-                        } else {
-                            // If $_SESSION["pic"] is not set or empty, display a placeholder image or a message
-                            ?>
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <img src="images/bg.png" alt="" style="width: 100px; height: 100px; border-radius: 50%;">
-                            </div>
-                            <?php
-                        }
+    </div>
+    </section>
+    <!-- Profile modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <!-- Profile content -->
+            <div class="profile-info">
+                <div class="profile-picture">
+                    <!-- Display user's profile picture -->
+                    <?php
+                    // Check if $_SESSION["pic"] is set and not empty
+                    if (isset($_SESSION["pic"]) && !empty($_SESSION["pic"])) {
+                        // If it's set and not empty, use it to display the profile picture
                         ?>
-                    </div>
-                    <div class="profile-details">
-                        <p>
-                            <?= $_SESSION["username"]; ?>
-                        </p>
-                        <p>
-                            <?= $_SESSION["email"]; ?>
-                        </p>
-                    </div>
+                        <!-- Display user's profile picture -->
+                        <img src="../images/<?= $_SESSION["pic"]; ?>" alt="Profile Picture">
+                        <?php
+                    } else {
+                        // If $_SESSION["pic"] is not set or empty, display a placeholder image or a message
+                        ?>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <img src="images/bg.png" alt="" style="width: 100px; height: 100px; border-radius: 50%;">
+                        </div>
+                        <?php
+                    }
+                    ?>
                 </div>
-                <!-- Logout button -->
-                <a href="logout.php" class="logout-btn">Logout</a>
+                <div class="profile-details">
+                    <p>
+                        <?= $_SESSION["username"]; ?>
+                    </p>
+                    <p>
+                        <?= $_SESSION["email"]; ?>
+                    </p>
+                </div>
             </div>
+            <!-- Logout button -->
+            <a href="logout.php" class="logout-btn">Logout</a>
         </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script>
-            // JavaScript for sidebar buttons
-            document.addEventListener('DOMContentLoaded', function () {
-                // Get all sidebar buttons
-                var sidebarButtons = document.querySelectorAll('.sidebar-button');
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // JavaScript for sidebar buttons
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all sidebar buttons
+            var sidebarButtons = document.querySelectorAll('.sidebar-button');
 
-                // Add click event listener to each sidebar button
-                sidebarButtons.forEach(function (button) {
-                    button.addEventListener('click', function (event) {
-                        // Prevent default behavior of anchor tag
-                        event.preventDefault();
+            // Add click event listener to each sidebar button
+            sidebarButtons.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    // Prevent default behavior of anchor tag
+                    event.preventDefault();
 
-                        // Get the href attribute of the clicked button
-                        var href = button.getAttribute('href');
+                    // Get the href attribute of the clicked button
+                    var href = button.getAttribute('href');
 
-                        // Redirect to the specified page
-                        window.location.href = href;
-                    });
+                    // Redirect to the specified page
+                    window.location.href = href;
                 });
             });
-        </script>
+        });
+    </script>
 
 
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script>
-            // Get the profile modal
-            var profileModal = document.getElementById("profileModal");
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // Get the profile modal
+        var profileModal = document.getElementById("profileModal");
 
-            // Get the profile icon button
-            var profileBtn = document.getElementById("openProfileModal");
+        // Get the profile icon button
+        var profileBtn = document.getElementById("openProfileModal");
 
-            // Get the <span> element that closes the profile modal
-            var closeBtn = profileModal.getElementsByClassName("close")[0];
+        // Get the <span> element that closes the profile modal
+        var closeBtn = profileModal.getElementsByClassName("close")[0];
 
-            // When the user clicks the profile icon button, open the profile modal 
-            profileBtn.onclick = function () {
-                profileModal.style.display = "block";
-            }
+        // When the user clicks the profile icon button, open the profile modal 
+        profileBtn.onclick = function () {
+            profileModal.style.display = "block";
+        }
 
-            // When the user clicks on <span> (x), close the profile modal
-            closeBtn.onclick = function () {
+        // When the user clicks on <span> (x), close the profile modal
+        closeBtn.onclick = function () {
+            profileModal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the profile modal, close it
+        window.onclick = function (event) {
+            if (event.target == profileModal) {
                 profileModal.style.display = "none";
             }
+        }
+    </script>
 
-            // When the user clicks anywhere outside of the profile modal, close it
-            window.onclick = function (event) {
-                if (event.target == profileModal) {
-                    profileModal.style.display = "none";
+
+    <script>
+        function openTable(tabId, tabLinkId) {
+            var tableType = tabId;
+
+            var tabs = document.querySelectorAll('.nav-link');
+            tabs.forEach(function (tab) {
+                tab.classList.remove('active');
+            });
+
+            // Add "active" class to the clicked tab
+            var activeTab = document.getElementById(tabLinkId);
+            activeTab.classList.add('active');
+
+            $.ajax({
+                type: 'POST',
+                url: 'rate_tables.php', // Create a separate PHP file for processing job upload
+                data: { tableType: tableType },
+
+                success: function (response) {
+                    // Handle success, update the UI or close the modal if needed
+                    $('.tables').html(response);
+                },
+                error: function (error) {
+                    // Handle error, show an alert or update the UI
+                    console.error('Ajax Error:', error);
                 }
-            }
-        </script>
-
-
-        <script>
-            function openTable(tabId, tabLinkId) {
-                var tableType = tabId;
-
-                var tabs = document.querySelectorAll('.nav-link');
-                tabs.forEach(function (tab) {
-                    tab.classList.remove('active');
-                });
-
-                // Add "active" class to the clicked tab
-                var activeTab = document.getElementById(tabLinkId);
-                activeTab.classList.add('active');
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'rate_tables.php', // Create a separate PHP file for processing job upload
-                    data: { tableType: tableType },
-
-                    success: function (response) {
-                        // Handle success, update the UI or close the modal if needed
-                        $('.tables').html(response);
-                    },
-                    error: function (error) {
-                        // Handle error, show an alert or update the UI
-                        console.error('Ajax Error:', error);
-                    }
-                });
-            }
-        </script>
+            });
+        }
+    </script>

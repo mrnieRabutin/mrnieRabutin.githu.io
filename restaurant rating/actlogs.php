@@ -6,7 +6,7 @@ include ('connect.php');
 function deleteAllLogs($conn)
 {
     $sql = "DELETE FROM logs";
-    if ($conn->query($sql) !== false) { // Changed exec() to query()
+    if ($conn->query($sql) !== false) { 
         echo "All login logs deleted successfully";
     } else {
         echo "Error deleting login logs: " . $conn->errorInfo()[2];
@@ -52,12 +52,12 @@ if ($result) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <style>
-        /* CSS styles */
+    
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #bfbfbf;
+            background-color: #1B1212;
         }
         .logo {
             display: flex;
@@ -71,8 +71,8 @@ if ($result) {
         }
 
         .header {
-            background-color: #fff;
-            color: #000;
+            background: linear-gradient(70deg, #cc1b1b, #c1853b);
+            color: #fff;
             padding: 10px;
             display: flex;
             justify-content: space-between;
@@ -133,7 +133,7 @@ if ($result) {
             float: left;
             width: 200px;
             height: 100vh;
-            background-color: #000;
+            background-color: #000000;
             color: #fff;
             padding: 15px;
         }
@@ -146,7 +146,6 @@ if ($result) {
 
         .sidebar-wrapper ul li {
             margin-bottom: 10px;
-            /* Add margin-bottom to create space between links */
         }
 
         .sidebar-wrapper ul li a {
@@ -185,7 +184,6 @@ if ($result) {
         table {
             border-collapse: collapse;
             margin-top: 50px auto;
-            /* Added margin */
             width: 150vh;
             margin-left: 10%;
 
@@ -200,12 +198,13 @@ if ($result) {
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #ffffff;
             font-size: 16px;
         }
 
         td {
             font-size: 14px;
+            color:white;
         }
 
         .empty {
@@ -247,7 +246,6 @@ if ($result) {
             transition: background-color 0.3s ease;
         }
 
-        /* Hover effect */
         button[name="delete_logs"]:hover {
             background-color: #ff4444;
             /* Lighter shade of red */
@@ -288,7 +286,7 @@ if ($result) {
             <thead>
                 <tr>
                     <th>Timestamp</th>
-                    <th>User ID</th>
+                    <th>Email</th>
                     <th>Activity</th>
 
                 </tr>
@@ -299,7 +297,7 @@ if ($result) {
                     foreach ($rows as $row) {
                         echo "<tr>";
                         echo "<td>" . $row["timestamp"] . "</td>";
-                        echo "<td>" . $row["email"] . "</td>"; // Displaying email from users table
+                        echo "<td>" . $row["email"] . "</td>";
                         echo "<td>" . $row["activity"] . "</td>";
 
                         echo "</tr>";
